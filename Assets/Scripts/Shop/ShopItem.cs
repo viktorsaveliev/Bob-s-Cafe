@@ -2,30 +2,43 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
+[RequireComponent(typeof(Button))]
 public abstract class ShopItem : MonoBehaviour
 {
+    [SerializeField] protected int Price;
     [SerializeField] private TMP_Text _nameText;
+    [SerializeField] private TMP_Text _priceText;
     [SerializeField] private string _name;
 
-    [SerializeField] private TMP_Text _priceText;
-    [SerializeField] protected int Price;
-
+    protected IShopItemObserver Observer;
     private Button _button;
-
-    private void Awake()
-    {
-        Init();
-    }
 
     private void OnEnable()
     {
-        UpdatePriceUI();
-        EventBus.OnMoneyValueChanged += UpdatePriceUI;
+        UpdateButtonInteractable();
+        EventBus.OnMoneyValueChanged += UpdateButtonInteractable;
+
+        _button.onClick.AddListener(SelectItem);
     }
 
     private void OnDisable()
     {
-        EventBus.OnMoneyValueChanged -= UpdatePriceUI;
+        EventBus.OnMoneyValueChanged -= UpdateButtonInteractable;
+
+        _button.onClick.RemoveListener(SelectItem);
+    }
+
+    public void SetPrice(int price)
+    {
+        if (price < 1) return;
+
+        Price = price;
+        UpdatePriceUI();
+    }
+
+    public void SetObserver(IShopItemObserver observer)
+    {
+        Observer = observer;
     }
 
     public virtual void Init()
@@ -35,9 +48,9 @@ public abstract class ShopItem : MonoBehaviour
         _button = GetComponent<Button>();
     }
 
-    public virtual void SelectItem() { }
+    public abstract void SelectItem();
 
-    private void UpdatePriceUI()
+    private void UpdateButtonInteractable()
     {
         if (Money.Value < Price)
         {
@@ -50,4 +63,6 @@ public abstract class ShopItem : MonoBehaviour
             _priceText.color = Color.green;
         }
     }
+
+    private void UpdatePriceUI() => _priceText.text = $"{Price}$";
 }

@@ -4,6 +4,8 @@ using System.Collections;
 [RequireComponent(typeof(VisitorsQueue))]
 public class VisitorsSpawner : ObjectPool
 {
+    [SerializeField] private VisitorsFactory _visitorsFactory;
+
     [SerializeField] private GameObject _prefab;
     [SerializeField] private int _maxVisitors = 10;
 
@@ -16,7 +18,6 @@ public class VisitorsSpawner : ObjectPool
 
     private Groups _groups;
     private Coroutine _spawnTimer;
-
 
     private void OnEnable()
     {
@@ -38,6 +39,13 @@ public class VisitorsSpawner : ObjectPool
         Capacity = _maxVisitors;
 
         InitPoolObject(_prefab);
+    }
+
+    protected override void CreateObject(GameObject prefab, bool isActiveByDefault = false)
+    {
+        GameObject spawned = _visitorsFactory.CreateVisitor(prefab, Vector3.zero, prefab.transform.rotation, Container);
+        spawned.SetActive(isActiveByDefault);
+        Pool.Add(spawned);
     }
 
     private void SpawnVisitor(GameObject visitorObject)
@@ -111,9 +119,10 @@ public class VisitorsSpawner : ObjectPool
 
     private IEnumerator SpawnTimer()
     {
-        while(true)
+        WaitForSeconds waitForSeconds = new(_timeToCreateNewVisitor);
+        while (true)
         {
-            yield return new WaitForSeconds(_timeToCreateNewVisitor);
+            yield return waitForSeconds;
 
             if (_visitorsQueue.Queue.Count < _visitorsQueue.MAX_VISITORS_IN_QUEUE)
             {

@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class ObjectPool : MonoBehaviour
 {
-    [SerializeField] private Transform _container;
+    [SerializeField] protected Transform Container;
 
-    private readonly List<GameObject> _pool = new();
+    protected readonly List<GameObject> Pool = new();
 
     protected int Capacity;
 
@@ -20,20 +20,20 @@ public class ObjectPool : MonoBehaviour
 
     protected bool TryGetObject(out GameObject result)
     {
-        result = _pool.FirstOrDefault(p => p.activeSelf == false);
+        result = Pool.FirstOrDefault(p => p.activeSelf == false);
         return result != null;
     }
 
-    private void CreateObject(GameObject prefab, bool isActiveByDefault = false)
+    protected virtual void CreateObject(GameObject prefab, bool isActiveByDefault = false)
     {
-        GameObject spawned = Instantiate(prefab, _container);
+        GameObject spawned = Instantiate(prefab, Container);
         spawned.SetActive(isActiveByDefault);
-        _pool.Add(spawned);
+        Pool.Add(spawned);
     }
 
     protected void RestartPool()
     {
-        foreach(GameObject pool in _pool)
+        foreach(GameObject pool in Pool)
         {
             pool.SetActive(false);
         }

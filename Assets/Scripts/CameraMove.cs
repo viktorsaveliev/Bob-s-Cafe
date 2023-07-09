@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -6,9 +7,9 @@ public class CameraMove : MonoBehaviour
     [SerializeField] private Vector3 _cameraBoundsMin;
     [SerializeField] private Vector3 _cameraBoundsMax;
 
-    private Vector3 _currentMousePosition;
-
     private readonly float _cameraSpeed = 1f;
+
+    private Vector3 _currentMousePosition;
     private bool _isCameraDragging;
 
     private void Update()
@@ -22,10 +23,28 @@ public class CameraMove : MonoBehaviour
             StopCameraDrag();
         }
 
+        float scroll = Input.GetAxis("Mouse ScrollWheel");
+
+        if (scroll != 0)
+        {
+            ChangeHeight(scroll);
+        }
+
         if (_isCameraDragging)
         {
             UpdateCameraPosition();
         }
+    }
+
+    private void ChangeHeight(float scroll)
+    {
+        Vector3 currentPosition = transform.position;
+
+        float sensitivity = 4;
+        float targetHeight = currentPosition.y - scroll * sensitivity;
+
+        Vector3 newPosition = new(currentPosition.x, FixOutOfBoundsY(targetHeight), currentPosition.z);
+        transform.position = newPosition;
     }
 
     private void StartCameraDrag()
@@ -57,16 +76,35 @@ public class CameraMove : MonoBehaviour
         Vector3 newRotation = cameraSpeed * Time.deltaTime * -direction.normalized;
         Vector3 desiredPosition = transform.position + newRotation;
 
-        transform.position = desiredPosition;
-
-        //_isCameraOutOfBounds = IsCameraOutOfBounds();
+        transform.position = FixOutOfBoundsXZ(desiredPosition);
         _currentMousePosition = newMousePosition;
     }
 
-    /*private bool IsCameraOutOfBounds()
+    private Vector3 FixOutOfBoundsXZ(Vector3 cameraPosition)
     {
-        Vector3 cameraPosition = transform.position;
-        return cameraPosition.x < _cameraBoundsMin.x || cameraPosition.x > _cameraBoundsMax.x ||
-               cameraPosition.z < _cameraBoundsMin.z || cameraPosition.z > _cameraBoundsMax.z;
-    }*/
+        if (cameraPosition.x < _cameraBoundsMin.x)
+            cameraPosition.x = _cameraBoundsMin.x;
+
+        else if (cameraPosition.x > _cameraBoundsMax.x)
+            cameraPosition.x = _cameraBoundsMax.x;
+
+        if (cameraPosition.z < _cameraBoundsMin.z)
+            cameraPosition.z = _cameraBoundsMin.z;
+
+        else if (cameraPosition.z > _cameraBoundsMax.z)
+            cameraPosition.z = _cameraBoundsMax.z;
+
+        return cameraPosition;
+    }
+
+    private float FixOutOfBoundsY(float y)
+    {
+        if (y < _cameraBoundsMin.y)
+            y = _cameraBoundsMin.y;
+
+        else if (y > _cameraBoundsMax.y)
+            y = _cameraBoundsMax.y;
+
+        return y;
+    }
 }

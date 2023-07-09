@@ -1,21 +1,16 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
+using Zenject;
 
 [RequireComponent(typeof(Outline))]
 public abstract class InteractableObject : MonoBehaviour, IInteractable
 {
-    [SerializeField] private Color[] _outlineColors = new Color[2];
-
-    public bool IsSelected { get; protected set; }
-    public bool IsOnMouseEnter { get; private set; }
-
+    private VisualDataConfig _visualDataConfig;
     private Outline _outline;
 
-    public enum OutlineType
-    {
-        MouseStay,
-        Selected
-    }
+    public bool IsSelected { get; protected set; }
+    public bool IsAnimationActived { get; protected set; }
+    public bool IsOnMouseEnter { get; private set; }
 
     protected virtual void Awake()
     {
@@ -58,20 +53,59 @@ public abstract class InteractableObject : MonoBehaviour, IInteractable
         }
     }
 
-    public virtual void ShowOutline()
+    [Inject]
+    public void Construct(VisualDataConfig visualDataConfig)
     {
+        _visualDataConfig = visualDataConfig;
+    }
+
+    public void Select()
+    {
+        if (IsSelected) return;
+
+        IsSelected = true;
+
+        ShowOutline();
+        ChangeOutlineColor(VisualDataConfig.OutlineType.Selected);
+
+        OnSelect();
+    }
+
+    public void UnSelect()
+    {
+        if (IsSelected == false) return;
+
+        IsSelected = false;
+
+        ChangeOutlineColor(VisualDataConfig.OutlineType.MouseStay);
+
+        if (IsOnMouseEnter == false)
+        {
+            HideOutline();
+        }
+
+        OnUnSelect();
+    }
+
+    protected abstract void OnSelect();
+    protected abstract void OnUnSelect();
+
+    public void ShowOutline()
+    {
+        if (IsSelected) return;
         _outline.OutlineWidth = 5;
     }
 
-    public virtual void HideOutline()
+    public void HideOutline()
     {
+        if (IsSelected) return;
         _outline.OutlineWidth = 0;
     }
 
-    protected void ChangeOutlineColor(OutlineType type)
+    protected void ChangeOutlineColor(VisualDataConfig.OutlineType type)
     {
         if (_outline == null) return;
-        _outline.OutlineColor = _outlineColors[(int)type];
+        _outline.OutlineColor = _visualDataConfig.OutlineColors[(int)type];
     }
 
     protected abstract void HandleClick();

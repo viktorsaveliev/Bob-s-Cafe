@@ -23,14 +23,14 @@ public class Shop : MonoBehaviour
 
     private void OnEnable()
     {
-        EventBus.OnNewDayStarted += InactiveShop;
-        EventBus.OnCurrentDayEnded += ActiveShop;
+        EventBus.OnNewDayStarted += InactiveButtonForOpenShop;
+        EventBus.OnCurrentDayEnded += ActiveButtonForOpenShop;
     }
 
     private void OnDisable()
     {
-        EventBus.OnNewDayStarted -= InactiveShop;
-        EventBus.OnCurrentDayEnded -= ActiveShop;
+        EventBus.OnNewDayStarted -= InactiveButtonForOpenShop;
+        EventBus.OnCurrentDayEnded -= ActiveButtonForOpenShop;
     }
 
     public void ChangeContentType(int typeID)
@@ -62,12 +62,12 @@ public class Shop : MonoBehaviour
             .OnComplete(() => _viewport.gameObject.SetActive(false));
     }
 
-    private void ActiveShop()
+    private void ActiveButtonForOpenShop()
     {
         _openShopButton.SetActive(true);
     }
 
-    private void InactiveShop()
+    private void InactiveButtonForOpenShop()
     {
         _openShopButton.SetActive(false);
         HideShop();

@@ -96,3 +96,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4466807d3e9a6e41aa3274e3b1de966, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _transperentMaterial:
+  - {fileID: 2100000, guid: 4a7ec16852453014c9b45b6212756ac6, type: 2}
+  - {fileID: 2100000, guid: dcd09d2718cc77048a390b35f57d69d5, type: 2}

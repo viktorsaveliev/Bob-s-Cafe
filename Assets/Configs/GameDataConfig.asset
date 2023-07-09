@@ -12,7 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 63946c9630bf66a499914439e12c36e4, type: 3}
   m_Name: GameDataConfig
   m_EditorClassIdentifier: 
-  _difficultyLevel: Normal
+  _difficultyLevelTitle: Normal
   _moneyForHapinessVisitor: 10
   _moneyForDissatisfiedVisitor: 5
   _penaltyForDepartedVisitor: 20
+  _priceForTable: 99
+  _priceForChair: 21
+  _priceForPainting: 70

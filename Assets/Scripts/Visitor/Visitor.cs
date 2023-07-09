@@ -6,30 +6,27 @@ using System;
 [RequireComponent(typeof(VisitorHUD))]
 public class Visitor : InteractableObject
 {
-    public VisitorHUD HUD { get; private set; }
-    public Animator Animator { get; private set; }
-
-    public float Patience { get; private set; }
-    public float Satiety { get; private set; }
-    public bool IsWantsSeparately { get; private set; }
-
-    public int OrderInQueue;
-
-    public string GetName => _name;
-    public IState CurrentState => _stateMachine.CurrentState;
-
     private readonly StateMachine _stateMachine = new();
+    private readonly VisitorDestroyer _visitorDestroyer = new();
 
-    public bool IsMemberGroup { get; private set; }
-    public int MemberGroupID { get; private set; }
-
-    private string _name;
+    public IState CurrentState => _stateMachine.CurrentState;
 
     private Coroutine _secondTimer;
     private float _wasteOfPatience;
     private Chair _usedChair;
 
+    public VisitorHUD HUD { get; private set; }
+    public Animator Animator { get; private set; }
 
+    public string Name { get; private set; }
+    public int OrderInQueue { get; set; }
+    public bool IsMemberGroup { get; private set; }
+    public int MemberGroupID { get; private set; }
+    public float Patience { get; private set; }
+    public float Satiety { get; private set; }
+    public bool IsWantsSeparately { get; private set; }
+
+    #region MonoBehaviour
 
     protected override void Awake()
     {
@@ -52,22 +49,15 @@ public class Visitor : InteractableObject
             StopCoroutine(_secondTimer);
     }
 
+    #endregion
+
     public void Init(int orderInQueue, int groupID = -1, float wasteOfPatience = -1)
     {
-        transform.position = new Vector3(17f, 0, 0);
-
-        StringBus stringBus = new();
-        string name = stringBus.Names[UnityEngine.Random.Range(0, stringBus.Names.Length)];
-        string surname = stringBus.SurNames[UnityEngine.Random.Range(0, stringBus.SurNames.Length)];
-        _name = $"{name} {surname}";
-
-        _usedChair = null;
-        
-        Patience = 100;
-        Satiety = UnityEngine.Random.Range(1f, 30f);
+        ResetData();
+        SetRandomName();
+        UnSelect();
 
         _wasteOfPatience = wasteOfPatience == -1 ? UnityEngine.Random.Range(0.5f, 3f) : wasteOfPatience;
-
         OrderInQueue = orderInQueue;
 
         if(groupID != -1)
@@ -81,10 +71,10 @@ public class Visitor : InteractableObject
             MemberGroupID = -1;
         }
 
-        UnSelect();
+       
     }
 
-    public void SetChair(Chair chair)
+    public void SetChairForSitting(Chair chair)
     {
         if (_usedChair != null) return;
         _usedChair = chair;
@@ -101,7 +91,7 @@ public class Visitor : InteractableObject
                 EventBus.OnPlayerUnSelectVisitor?.Invoke(this);
             }
 
-            Walk(new Vector3(14f, 0, 0), new VisitorDestroyer());
+            Walk(new Vector3(14f, 0, 0), _visitorDestroyer);
         }
     }
 
@@ -109,16 +99,6 @@ public class Visitor : InteractableObject
     {
         Patience -= _wasteOfPatience;
         HUD.UpdateBar(Patience / 100f);
-    }
-
-    private int GetHappinessLevel()
-    {
-        int happinessLevel = 0;
-
-        if (Satiety > 90) happinessLevel++;
-        if (Patience > 30) happinessLevel++;
-
-        return happinessLevel;
     }
 
     public void PayForService()
@@ -132,6 +112,34 @@ public class Visitor : InteractableObject
         {
             Money.Give(difficultyLevel.MoneyForDissatisfiedVisitor);
         }
+    }
+
+    private void ResetData()
+    {
+        transform.position = new Vector3(17f, 0, 0);
+        _usedChair = null;
+        Patience = 100;
+        Satiety = UnityEngine.Random.Range(1f, 30f);
+    }
+
+    private void SetRandomName()
+    {
+        StringBus stringBus = new();
+
+        string firstName = stringBus.Names[UnityEngine.Random.Range(0, stringBus.Names.Length)];
+        string lastName = stringBus.SurNames[UnityEngine.Random.Range(0, stringBus.SurNames.Length)];
+
+        Name = $"{firstName} {lastName}";
+    }
+
+    private int GetHappinessLevel()
+    {
+        int happinessLevel = 0;
+
+        if (Satiety > 90) happinessLevel++;
+        if (Patience > 30) happinessLevel++;
+
+        return happinessLevel;
     }
 
     #region Interactable methods
@@ -150,33 +158,14 @@ public class Visitor : InteractableObject
         }
     }
 
-    public void Select()
+    protected override void OnSelect()
     {
-        ShowOutline();
-
-        IsSelected = true;
-
-        ChangeOutlineColor(OutlineType.Selected);
+        //EventBus.OnPlayerSelectVisitor?.Invoke(this);
     }
 
-    public void UnSelect()
+    protected override void OnUnSelect()
     {
-        IsSelected = false;
-
-        ChangeOutlineColor(OutlineType.MouseStay);
-        HideOutline();
-    }
-
-    public override void ShowOutline()
-    {
-        if (IsSelected) return;
-        base.ShowOutline();
-    }
-
-    public override void HideOutline()
-    {
-        if (IsSelected) return;
-        base.HideOutline();
+        //EventBus.OnPlayerUnSelectVisitor?.Invoke(this);
     }
 
     #endregion
@@ -185,7 +174,7 @@ public class Visitor : InteractableObject
 
     public void Eating()
     {
-        EatingState eatingState = (EatingState)_stateMachine.GetState<EatingState>();
+        EatingState eatingState = (EatingState) _stateMachine.GetState<EatingState>();
         eatingState.UpdateData(_usedChair);
         _stateMachine.ChangeState(eatingState);
     }
@@ -199,7 +188,7 @@ public class Visitor : InteractableObject
 
     public void Waiting()
     {
-        WaitingState waitingState = (WaitingState) _stateMachine.GetState<WaitingState>();
+        IState waitingState = _stateMachine.GetState<WaitingState>();
         _stateMachine.ChangeState(waitingState);
     }
 

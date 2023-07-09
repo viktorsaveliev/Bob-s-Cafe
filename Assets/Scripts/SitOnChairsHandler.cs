@@ -34,7 +34,7 @@ public class SitOnChairsHandler : IVisitorActionAfterPointReached
             visitor.Walk(freeChair.transform.position, this);
             visitor.HUD.HideBar();
 
-            visitor.SetChair(freeChair);
+            visitor.SetChairForSitting(freeChair);
             EventBus.OnVisitorSitInChair?.Invoke(visitor);
         }
     }

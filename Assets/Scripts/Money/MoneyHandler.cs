@@ -1,13 +1,8 @@
 using UnityEngine;
 
-public class MoneyHandler : MonoBehaviour
+public class MoneyHandler
 {
     public int Money { get; private set; }
-
-    private void Start()
-    {
-        Set(6000);
-    }
 
     public bool Give(int amount)
     {
@@ -23,7 +18,7 @@ public class MoneyHandler : MonoBehaviour
     {
         if (amount < 1 || Money < amount)
         {
-            print("Dont have a money");
+            Debug.Log("Dont have a money");
             return false;
         }
 

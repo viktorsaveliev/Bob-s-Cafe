@@ -1,29 +1,32 @@
 using UnityEngine;
 
-public class WallpaperChanger : MonoBehaviour
+public class WallpaperChanger : IShopItemObserver
 {
-    [SerializeField] private MeshRenderer[] _walls;
+    private readonly MeshRenderer[] _walls;
+
     private Material _currentWallpapers;
+    private Material _previewWallpapers;
 
-    private void OnEnable()
+    public WallpaperChanger(MeshRenderer[] walls)
     {
-        EventBus.OnPlayerSelectWallpaper += ChangeWallpaper;
-    }
-
-    private void OnDisable()
-    {
-        EventBus.OnPlayerSelectWallpaper -= ChangeWallpaper;
+        _walls = walls;
     }
 
     private void ChangeWallpaper(Material wallpaper, int price)
     {
-        if (_currentWallpapers == wallpaper) return;
+        if (_previewWallpapers == wallpaper || _currentWallpapers == wallpaper) return;
 
         foreach(MeshRenderer wall in _walls)
         {
             wall.material = wallpaper;
         }
 
-        _currentWallpapers = wallpaper;
+        _previewWallpapers = wallpaper;
+    }
+
+    public void OnShopItemClicked<T>(T prefab, int price)
+    {
+        var material = prefab as Material;
+        ChangeWallpaper(material, price);
     }
 }

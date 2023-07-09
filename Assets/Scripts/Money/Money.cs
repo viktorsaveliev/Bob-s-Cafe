@@ -8,7 +8,8 @@ public class Money : MonoBehaviour
 
     public void Init()
     {
-        _money = GetComponent<MoneyHandler>();
+        _money = new();
+        _money.Set(1000);
     }
 
     public static bool Give(int amount) => _money.Give(amount);

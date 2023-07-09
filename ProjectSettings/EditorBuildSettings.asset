@@ -8,4 +8,8 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Cafe.unity
     guid: 99c9720ab356a0642a771bea13969a05
-  m_configObjects: {}
+  m_configObjects:
+    com.unity.addressableassets: {fileID: 11400000, guid: c9002ceb9a16ae741b199460a857d5c2,
+      type: 2}
+    com.unity.localization.settings: {fileID: 11400000, guid: b0f0feddf9d60204bae6a89f5cc0cede,
+      type: 2}

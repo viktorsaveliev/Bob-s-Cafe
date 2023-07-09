@@ -2,12 +2,13 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 using DG.Tweening;
+using TMPro;
 
 public class VisitorInfoUI : MonoBehaviour
 {
     [SerializeField] private GameObject _infoUI;
-    [SerializeField] private Text _nameText;
-    [SerializeField] private Text _orderText;
+    [SerializeField] private TMP_Text _nameText;
+    [SerializeField] private TMP_Text _orderText;
     [SerializeField] private Image _patienceBar;
     [SerializeField] private Gradient _patienceGradient;
 
@@ -51,7 +52,7 @@ public class VisitorInfoUI : MonoBehaviour
 
     private void UpdateVisitorInfoUI(Visitor visitor)
     {
-        _nameText.text = visitor.GetName;
+        _nameText.text = visitor.Name;
         _orderText.text = $"Order in queue: {visitor.OrderInQueue}";
 
         float patienceAmount = (visitor.CurrentState is WaitingState ? visitor.Patience : visitor.Satiety) / 100f;
