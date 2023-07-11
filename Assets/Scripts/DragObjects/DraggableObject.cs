@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class DraggableObject : MonoBehaviour
 {
-    private Material[] _transperentMaterial;
+    private Material[] _transparentMaterial;
 
     private LayerMask _allowedLayer;
     private Camera _camera;
@@ -66,7 +66,22 @@ public class DraggableObject : MonoBehaviour
 
     public void Init(LayerMask allowedLayer, Material[] transperentMaterial, IDraggable drag)
     {
-        if(TryGetComponent<InteractableObject>(out var interactObj))
+        RemoveUnusedComponents();
+
+        _camera = Camera.main;
+        _transparentMaterial = transperentMaterial;
+        _drag = drag;
+        _allowedLayer = allowedLayer;
+
+        _objRenderer = GetComponent<Renderer>();
+        GetComponent<Collider>().isTrigger = true;
+
+        SetTransparentMaterial(true);
+    }
+
+    private void RemoveUnusedComponents()
+    {
+        if (TryGetComponent<InteractableObject>(out var interactObj))
         {
             Destroy(interactObj);
         }
@@ -75,16 +90,6 @@ public class DraggableObject : MonoBehaviour
         {
             Destroy(rigidbody);
         }
-
-        _camera = Camera.main;
-        _transperentMaterial = transperentMaterial;
-        _drag = drag;
-        _allowedLayer = allowedLayer;
-
-        _objRenderer = GetComponent<Renderer>();
-        GetComponent<Collider>().isTrigger = true;
-
-        SetTransparentMaterial(true);
     }
 
     public void Drag()
@@ -107,14 +112,14 @@ public class DraggableObject : MonoBehaviour
 
     public void SetTransparentMaterial(bool isAllowed)
     {
-        _objRenderer.material = _transperentMaterial[isAllowed ? 0 : 1];
+        _objRenderer.material = _transparentMaterial[isAllowed ? 0 : 1];
 
         var chairsMesh = GetComponentsInChildren<MeshRenderer>();
         if(chairsMesh.Length > 0)
         {
             foreach (MeshRenderer mesh in chairsMesh)
             {
-                mesh.material = _transperentMaterial[isAllowed ? 0 : 1];
+                mesh.material = _transparentMaterial[isAllowed ? 0 : 1];
             }
         }
     }

@@ -13,6 +13,6 @@ public class Money : MonoBehaviour
     }
 
     public static bool Give(int amount) => _money.Give(amount);
-    public static bool Spend(int amount) => _money.Spend(amount);
+    public static bool TrySpend(int amount) => _money.TrySpend(amount);
     public static void Set(int amount) => _money.Set(amount);
 }

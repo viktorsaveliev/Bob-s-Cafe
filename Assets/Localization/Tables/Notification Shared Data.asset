@@ -31,6 +31,38 @@ MonoBehaviour:
     m_Key: Button_Cancel
     m_Metadata:
       m_Items: []
+  - m_Id: 779424593137664
+    m_Key: DontHaveMoney_Header
+    m_Metadata:
+      m_Items: []
+  - m_Id: 779464007012352
+    m_Key: DontHaveMoney_Text
+    m_Metadata:
+      m_Items: []
+  - m_Id: 780057782046720
+    m_Key: NoEmptySeats_Header
+    m_Metadata:
+      m_Items: []
+  - m_Id: 780169430224896
+    m_Key: NoEmptySeats_Text
+    m_Metadata:
+      m_Items: []
+  - m_Id: 782668916641792
+    m_Key: IncorrectValue_Header
+    m_Metadata:
+      m_Items: []
+  - m_Id: 782678542569472
+    m_Key: IncorrectValue_Text
+    m_Metadata:
+      m_Items: []
+  - m_Id: 783373178032128
+    m_Key: VisitorSeparately_Header
+    m_Metadata:
+      m_Items: []
+  - m_Id: 783412453494784
+    m_Key: VisitorSeparately_Text
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

@@ -1,12 +1,14 @@
-using UnityEngine;
-
 public class MoneyHandler
 {
     public int Money { get; private set; }
 
     public bool Give(int amount)
     {
-        if (amount < 1) return false;
+        if (amount < 1)
+        {
+            Notification.ShowSimple(Notification.MessageType.IncorrectValue);
+            return false;
+        }
 
         Money += amount;
         EventBus.OnMoneyValueChanged?.Invoke();
@@ -14,11 +16,11 @@ public class MoneyHandler
         return true;
     }
 
-    public bool Spend(int amount)
+    public bool TrySpend(int amount)
     {
         if (amount < 1 || Money < amount)
         {
-            Debug.Log("Dont have a money");
+            Notification.ShowSimple(Notification.MessageType.DontHaveMoney);
             return false;
         }
 

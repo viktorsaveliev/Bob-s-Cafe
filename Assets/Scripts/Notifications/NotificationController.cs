@@ -1,83 +1,60 @@
 using System;
-using UnityEngine;
-using UnityEngine.UI;
-using TMPro;
-using DG.Tweening;
 
-public class NotificationController : MonoBehaviour
+public class NotificationController
 {
-    [SerializeField] private GameObject _window;
-    [SerializeField] private Image _background;
+    public string[,] LocalizeKeys => _localizeKeys;
 
-    [SerializeField] private TMP_Text _notificationHeader;
-    [SerializeField] private TMP_Text _notificationText;
-    
-    [SerializeField] private Button _confirmButton;
-    [SerializeField] private Button _cancelButton;
+    private readonly string[,] _localizeKeys =
+    {
+        {"SaleFurniture_Header",        "SaleFurniture_Text"},
+        {"DontHaveMoney_Header",        "DontHaveMoney_Text"},
+        {"NoEmptySeats_Header",         "NoEmptySeats_Text" },
+        {"IncorrectValue_Header",       "IncorrectValue_Text"},
+        {"VisitorSeparately_Header",    "VisitorSeparately_Text"}
+    };
+
+    private readonly NotificationView _notificationView;
 
     private Action _onConfirm;
     private Action _onCancel;
 
-    private void OnEnable()
+    public NotificationController(NotificationView notificationView)
     {
-        _confirmButton.onClick.AddListener(OnConfirmButtonClicked);
-        _cancelButton.onClick.AddListener(OnCancelButtonClicked);
+        _notificationView = notificationView;
     }
 
-    private void OnDisable()
+    public void Init()
     {
-        _confirmButton.onClick.RemoveListener(OnConfirmButtonClicked);
-        _cancelButton.onClick.RemoveListener(OnCancelButtonClicked);
+        _notificationView.OnClickConfirm += OnConfirmDialogButtonClicked;
+        _notificationView.OnClickCancel += OnCancelDialogButtonClicked;
     }
 
-    public void OnConfirmButtonClicked()
+    public void DeInit()
+    {
+        _notificationView.OnClickConfirm -= OnConfirmDialogButtonClicked;
+        _notificationView.OnClickCancel -= OnCancelDialogButtonClicked;
+    }
+
+    public void OnConfirmDialogButtonClicked()
     {
         _onConfirm?.Invoke();
-        HideNotification();
     }
 
-    public void OnCancelButtonClicked()
+    public void OnCancelDialogButtonClicked()
     {
         _onCancel?.Invoke();
-        HideNotification();
     }
 
-    public void ShowNotification(NotificationData data)
+    public void ShowDialog(NotificationData data)
     {
-        _notificationHeader.text = data.Header;
-        _notificationText.text = data.Text;
-        
         _onConfirm = data.OnConfirm;
         _onCancel = data.OnCancel;
 
-        ShowAnimation();
+        _notificationView.ShowDialog(data.Header, data.Text);
     }
 
-    private void HideNotification()
+    public void ShowSimple(string localizeKey, int secondsToView)
     {
-        HideAnimation();
-    }
-
-    private void ShowAnimation()
-    {
-        _background.gameObject.SetActive(true);
-
-        Color targetColor = new(_background.color.r, _background.color.g, _background.color.b, 0.6f);
-        _background.color = new Color(_background.color.r, _background.color.g, _background.color.b, 0);
-        _background.DOColor(targetColor, 0.3f);
-
-        _window.transform.localScale = Vector3.zero;
-        _window.SetActive(true);
-        _window.transform.DOScale(1f, 0.3f).SetEase(Ease.OutBack);
-    }
-
-    private void HideAnimation()
-    {
-        _background.gameObject.SetActive(false);
-
-        _window.transform.DOScale(0f, 0.3f).SetEase(Ease.InBack).OnComplete(() =>
-        {
-            _window.SetActive(false);
-        });
+        _notificationView.ShowSimple(localizeKey, secondsToView);
     }
 }

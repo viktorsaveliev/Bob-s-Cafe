@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
 
-public class Shop : MonoBehaviour
+public class Shop : MonoBehaviour, IStartDayObserver, IEndDayObserver
 {
     [SerializeField] private RectTransform[] _contentContainers;
     [SerializeField] private ScrollRect _viewport;
@@ -19,18 +19,6 @@ public class Shop : MonoBehaviour
     private void Start()
     {
         ChangeContentType(0);
-    }
-
-    private void OnEnable()
-    {
-        EventBus.OnNewDayStarted += InactiveButtonForOpenShop;
-        EventBus.OnCurrentDayEnded += ActiveButtonForOpenShop;
-    }
-
-    private void OnDisable()
-    {
-        EventBus.OnNewDayStarted -= InactiveButtonForOpenShop;
-        EventBus.OnCurrentDayEnded -= ActiveButtonForOpenShop;
     }
 
     public void ChangeContentType(int typeID)
@@ -71,5 +59,15 @@ public class Shop : MonoBehaviour
     {
         _openShopButton.SetActive(false);
         HideShop();
+    }
+
+    public void OnDayStarted()
+    {
+        InactiveButtonForOpenShop();
+    }
+
+    public void OnDayEnded()
+    {
+        ActiveButtonForOpenShop();
     }
 }

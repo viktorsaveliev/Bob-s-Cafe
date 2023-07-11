@@ -1,9 +1,31 @@
 using UnityEngine;
 using DG.Tweening;
+using System;
 
 public class Table : Furniture, IFurnitureOnFloor
 {
     [SerializeField] private Chair[] _chairs;
+
+    public bool IsUsed { get; private set; }
+    public int GroupUsedID { get; private set; }
+
+    public void SetUsed(int groupID)
+    {
+        if (IsUsed || groupID < -1) return;
+
+        GroupUsedID = groupID;
+        IsUsed = true;
+    }
+
+    public void SetEmpty()
+    {
+        if (GetChairsCount() - GetFreeChairsCount() == 0)
+        {
+            IsUsed = false;
+            GroupUsedID = -1;
+        }
+        else throw new Exception("Chairs count mismatch");
+    }
 
     public Chair FindFreeChair()
     {

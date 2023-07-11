@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-public class VisitorsQueue : MonoBehaviour, IVisitorActionAfterPointReached
+public class VisitorsQueue : MonoBehaviour, IVisitorActionAfterPointReached, IStartDayObserver, IEndDayObserver
 {
     [SerializeField] private Transform[] _positionsInQueue;
 
@@ -10,39 +10,59 @@ public class VisitorsQueue : MonoBehaviour, IVisitorActionAfterPointReached
     public List<Visitor> Queue { get; private set; }
     public Transform[] GetPositionInQueue => _positionsInQueue;
 
+    private bool _queueIsActive;
+    private Coroutine _secondTimer;
+
     private void OnEnable()
     {
-        EventBus.OnVisitorSitInChair += DeleteVisitorFromQueue;
-        EventBus.OnCurrentDayEnded += ResetQueue;
+        EventBus.OnVisitorSitInChair += RemoveVisitorFromQueue;
     }
 
     private void OnDisable()
     {
-        EventBus.OnVisitorSitInChair -= DeleteVisitorFromQueue;
-        EventBus.OnCurrentDayEnded -= ResetQueue;
+        EventBus.OnVisitorSitInChair -= RemoveVisitorFromQueue;
     }
 
     public void Init()
     {
         MAX_VISITORS_IN_QUEUE = _positionsInQueue.Length;
         Queue = new List<Visitor>();
+    }
 
-        StartCoroutine(SecondTimer());
+    public void OnDayStarted()
+    {
+        _queueIsActive = true;
+        _secondTimer = StartCoroutine(SecondTimer());
+    }
+
+    public void OnDayEnded()
+    {
+        ResetQueue();
+        _queueIsActive = false;
+
+        if (_secondTimer != null)
+        {
+            StopCoroutine(_secondTimer);
+            _secondTimer = null;
+        }
     }
 
     private IEnumerator SecondTimer()
     {
-        yield return new WaitForSeconds(1f);
+        WaitForSeconds waitForSeconds = new(1f);
 
-        for (int i = 0; i < Queue.Count; i++)
+        while(_queueIsActive)
         {
-            if (Queue[i].Patience <= 0)
+            yield return waitForSeconds;
+
+            for (int i = 0; i < Queue.Count; i++)
             {
-                VisitorGoAway(Queue[i]);
+                if (Queue[i].Patience <= 0)
+                {
+                    VisitorGoAway(Queue[i]);
+                }
             }
         }
-
-        StartCoroutine(SecondTimer());
     }
 
     private void VisitorGoAway(Visitor visitor, bool deleteFromQueue = true)
@@ -55,7 +75,7 @@ public class VisitorsQueue : MonoBehaviour, IVisitorActionAfterPointReached
                 UpdateQueue();
 
                 GameDataConfig difficultyLevel = GameData.Settings.CurrentDifficultyLevel;
-                Money.Spend(difficultyLevel.PenaltyForDepartedVisitor);
+                Money.TrySpend(difficultyLevel.PenaltyForDepartedVisitor);
             }
             EventBus.OnVisitorHasLeftQueue?.Invoke(visitor);
         }
@@ -73,7 +93,7 @@ public class VisitorsQueue : MonoBehaviour, IVisitorActionAfterPointReached
         }
     }
 
-    private void DeleteVisitorFromQueue(Visitor visitor)
+    private void RemoveVisitorFromQueue(Visitor visitor)
     {
         if (visitor == null) return;
 

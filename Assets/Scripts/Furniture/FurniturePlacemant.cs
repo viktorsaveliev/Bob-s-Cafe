@@ -104,7 +104,7 @@ public class FurniturePlacemant : IShopItemObserver
         DestroyDraggableObject();
     }
 
-    private bool TryPurchaseItem() => Money.Spend(_price);
+    private bool TryPurchaseItem() => Money.TrySpend(_price);
 
     private void PlaceItemInEditMode()
     {

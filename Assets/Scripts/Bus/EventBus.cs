@@ -16,8 +16,5 @@ public static class EventBus
     // === Other
     public static Action OnMoneyValueChanged;
 
-    public static Action OnNewDayStarted;
-    public static Action OnCurrentDayEnded;
-
     public static Action OnPlayerBoughtShopItem;
 }

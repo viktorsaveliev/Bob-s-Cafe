@@ -70,8 +70,6 @@ public class Visitor : InteractableObject
             IsMemberGroup = false;
             MemberGroupID = -1;
         }
-
-       
     }
 
     public void SetChairForSitting(Chair chair)
@@ -120,6 +118,7 @@ public class Visitor : InteractableObject
         _usedChair = null;
         Patience = 100;
         Satiety = UnityEngine.Random.Range(1f, 30f);
+        IsSelected = false;
     }
 
     private void SetRandomName()
@@ -158,12 +157,12 @@ public class Visitor : InteractableObject
         }
     }
 
-    protected override void OnSelect()
+    protected override void OnSelected()
     {
         //EventBus.OnPlayerSelectVisitor?.Invoke(this);
     }
 
-    protected override void OnUnSelect()
+    protected override void OnUnSelected()
     {
         //EventBus.OnPlayerUnSelectVisitor?.Invoke(this);
     }

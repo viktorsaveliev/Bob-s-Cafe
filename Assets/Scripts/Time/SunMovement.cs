@@ -1,31 +1,25 @@
 using UnityEngine;
 using DG.Tweening;
 
-public class SunMovement : MonoBehaviour
+public class SunMovement : MonoBehaviour, IStartDayObserver, IEndDayObserver
 {
     [SerializeField] private Light _sun;
-    private TimeControl _time;
+    private TimeController _time;
 
     private readonly Vector3 _startSunRotation = new(-190f, -61.7f, 0);
 
     private void Awake()
     {
-        _time = GetComponent<TimeControl>();
+        _time = GetComponent<TimeController>();
     }
 
     private void OnEnable()
     {
-        EventBus.OnNewDayStarted += RotateSunForNewDay;
-        EventBus.OnCurrentDayEnded += RotateSunForEndDay;
-
         _time.SubscribeToHourPassed(UpdateSunPosition);
     }
 
     private void OnDisable()
     {
-        EventBus.OnNewDayStarted -= RotateSunForNewDay;
-        EventBus.OnCurrentDayEnded -= RotateSunForEndDay;
-
         _time.UnsubscribeToHourPassed(UpdateSunPosition);
     }
 
@@ -49,5 +43,15 @@ public class SunMovement : MonoBehaviour
     private void RotateSunForEndDay()
     {
         _sun.transform.DORotate(_startSunRotation, 2f);
+    }
+
+    public void OnDayStarted()
+    {
+        RotateSunForNewDay();
+    }
+
+    public void OnDayEnded()
+    {
+        RotateSunForEndDay();
     }
 }

@@ -68,8 +68,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 500$
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: c3d31885aec51f54098485bb9f1791bd, type: 2}
-  m_sharedMaterial: {fileID: 5205734916366337324, guid: c3d31885aec51f54098485bb9f1791bd,
+  m_fontAsset: {fileID: 11400000, guid: 5d092208a5c2d9a45854afbd3d9a5830, type: 2}
+  m_sharedMaterial: {fileID: -6363953359331758408, guid: 5d092208a5c2d9a45854afbd3d9a5830,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -284,10 +284,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65cdd6b464c14624c94d8400f836944d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _nameText: {fileID: 1613642963644563993}
-  _name: Table 1
-  _priceText: {fileID: 6745923846103326201}
   Price: 0
+  _nameText: {fileID: 1613642963644563993}
+  _priceText: {fileID: 6745923846103326201}
+  _name: Table 1
   _itemPrefab: {fileID: 7189835612282141625, guid: d12ef307dc1ec3b4d8c3f59bc94a94e1,
     type: 3}
 --- !u!1 &9027291266910204704
@@ -358,8 +358,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Table
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: c3d31885aec51f54098485bb9f1791bd, type: 2}
-  m_sharedMaterial: {fileID: 5205734916366337324, guid: c3d31885aec51f54098485bb9f1791bd,
+  m_fontAsset: {fileID: 11400000, guid: 5d092208a5c2d9a45854afbd3d9a5830, type: 2}
+  m_sharedMaterial: {fileID: -6363953359331758408, guid: 5d092208a5c2d9a45854afbd3d9a5830,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}

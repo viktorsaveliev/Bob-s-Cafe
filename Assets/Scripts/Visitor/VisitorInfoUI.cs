@@ -55,7 +55,7 @@ public class VisitorInfoUI : MonoBehaviour
         _nameText.text = visitor.Name;
         _orderText.text = $"Order in queue: {visitor.OrderInQueue}";
 
-        float patienceAmount = (visitor.CurrentState is WaitingState ? visitor.Patience : visitor.Satiety) / 100f;
+        float patienceAmount = (visitor.CurrentState is EatingState ? visitor.Satiety : visitor.Patience) / 100f;
         _patienceBar.DOFillAmount(patienceAmount, 0.5f);
         _patienceBar.color = _patienceGradient.Evaluate(patienceAmount);
     }

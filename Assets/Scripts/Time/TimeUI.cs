@@ -1,34 +1,28 @@
 using UnityEngine;
-using UnityEngine.UI;
 using DG.Tweening;
+using TMPro;
 
-[RequireComponent(typeof(TimeControl))]
-public class TimeUI : MonoBehaviour
+[RequireComponent(typeof(TimeController))]
+public class TimeUI : MonoBehaviour, IStartDayObserver, IEndDayObserver
 {
-    [SerializeField] private Text _timeText;
-    [SerializeField] private Text _dayText;
+    [SerializeField] private TMP_Text _timeText;
+    [SerializeField] private TMP_Text _dayText;
     [SerializeField] private GameObject _buttonForOpenCafe;
 
-    private TimeControl _time;
+    private TimeController _time;
 
     private void Awake()
     {
-        _time = GetComponent<TimeControl>();
+        _time = GetComponent<TimeController>();
     }
 
     private void OnEnable()
     {
-        EventBus.OnNewDayStarted += OnDayStarted;
-        EventBus.OnCurrentDayEnded += OnDayEnded;
-
         _time.SubscribeToMinutePassed(UpdateUI);
     }
 
     private void OnDisable()
     {
-        EventBus.OnNewDayStarted -= OnDayStarted;
-        EventBus.OnCurrentDayEnded -= OnDayEnded;
-
         _time.UnsubscribeFromMinutePassed(UpdateUI);
     }
 
@@ -37,9 +31,9 @@ public class TimeUI : MonoBehaviour
         _timeText.text = _time.GetCurrentTime();
     }
 
-    private void OnDayStarted()
+    public void OnDayStarted()
     {
-        _dayText.text = $"Day {_time.GetCurrendDay}";
+        _dayText.text = $"Day {_time.GetCurrentDay}";
         _dayText.transform.localScale = Vector3.zero;
         _dayText.rectTransform.anchoredPosition = new Vector2(-100f, 0);
         _dayText.gameObject.SetActive(true);
@@ -51,7 +45,7 @@ public class TimeUI : MonoBehaviour
         });
     }
 
-    private void OnDayEnded()
+    public void OnDayEnded()
     {
         _buttonForOpenCafe.transform.localScale = Vector3.zero;
         _buttonForOpenCafe.SetActive(true);

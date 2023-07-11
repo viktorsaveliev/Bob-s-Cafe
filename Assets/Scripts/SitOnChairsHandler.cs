@@ -1,3 +1,4 @@
+
 public class SitOnChairsHandler : IVisitorActionAfterPointReached
 {
     private Visitor[] _visitorsInGroup;
@@ -26,15 +27,23 @@ public class SitOnChairsHandler : IVisitorActionAfterPointReached
     {
         if (visitor == null) return;
 
+        if (_table.IsUsed && _table.GroupUsedID != visitor.MemberGroupID && visitor.IsWantsSeparately)
+        {
+            Notification.ShowSimple(Notification.MessageType.VisitorWantsSeparately);
+            return;
+        }
+        
         Chair freeChair = _table.FindFreeChair();
         if (freeChair != null)
         {
             freeChair.SetUsing();
 
             visitor.Walk(freeChair.transform.position, this);
+            visitor.SetChairForSitting(freeChair);
             visitor.HUD.HideBar();
 
-            visitor.SetChairForSitting(freeChair);
+            _table.SetUsed(visitor.MemberGroupID);
+
             EventBus.OnVisitorSitInChair?.Invoke(visitor);
         }
     }

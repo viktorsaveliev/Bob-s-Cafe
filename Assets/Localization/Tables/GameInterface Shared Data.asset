@@ -27,6 +27,22 @@ MonoBehaviour:
     m_Key: Button_Cancel
     m_Metadata:
       m_Items: []
+  - m_Id: 49275589414912
+    m_Key: Day
+    m_Metadata:
+      m_Items: []
+  - m_Id: 71272436387840
+    m_Key: Furniture_Edit
+    m_Metadata:
+      m_Items: []
+  - m_Id: 71319106408448
+    m_Key: Furniture_Sale
+    m_Metadata:
+      m_Items: []
+  - m_Id: 320581526409216
+    m_Key: Button_Accept
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

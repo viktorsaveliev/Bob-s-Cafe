@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections;
 
 [RequireComponent(typeof(VisitorsQueue))]
-public class VisitorsSpawner : ObjectPool
+public class VisitorsSpawner : ObjectPool, IStartDayObserver, IEndDayObserver
 {
     [SerializeField] private VisitorsFactory _visitorsFactory;
 
@@ -18,18 +18,6 @@ public class VisitorsSpawner : ObjectPool
 
     private Groups _groups;
     private Coroutine _spawnTimer;
-
-    private void OnEnable()
-    {
-        EventBus.OnNewDayStarted += StartSpawnVisitors;
-        EventBus.OnCurrentDayEnded += StopSpawnVisitors;
-    }
-
-    private void OnDisable()
-    {
-        EventBus.OnNewDayStarted -= StartSpawnVisitors;
-        EventBus.OnCurrentDayEnded -= StopSpawnVisitors;
-    }
 
     public void Init()
     {
@@ -103,7 +91,7 @@ public class VisitorsSpawner : ObjectPool
         }
         else
         {
-            print("Нет свободных мест");
+            print("Dont have free place");
         }
     }
 
@@ -163,5 +151,15 @@ public class VisitorsSpawner : ObjectPool
             StopCoroutine(_spawnTimer);
         }
         _spawnTimer = null;
+    }
+
+    public void OnDayStarted()
+    {
+        StartSpawnVisitors();
+    }
+
+    public void OnDayEnded()
+    {
+        StopSpawnVisitors();
     }
 }

@@ -1,9 +1,9 @@
 using UnityEngine;
-using UnityEngine.UI;
+using TMPro;
 
 public class MoneyInfoUI : MonoBehaviour
 {
-    [SerializeField] private Text _moneyText;
+    [SerializeField] private TMP_Text _moneyText;
 
     private void OnEnable()
     {

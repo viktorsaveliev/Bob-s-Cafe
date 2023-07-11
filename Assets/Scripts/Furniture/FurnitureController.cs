@@ -1,10 +1,12 @@
 
-public class FurnitureController
+public class FurnitureController : IStartDayObserver, IEndDayObserver
 {
     private readonly FurniturePlacemant _furniturePlacemant;
     private readonly FurnitureUI _furnitureUI;
 
     private Furniture _selectedFurniture;
+
+    private bool _isEditAllowed;
 
     public FurnitureController(FurniturePlacemant furniturePlacemant, FurnitureUI furnitureUI)
     {
@@ -19,6 +21,8 @@ public class FurnitureController
 
         _furnitureUI.OnClickEditButton += EditFurniture;
         _furnitureUI.OnClickSaleButton += SaleFurniture;
+
+        _isEditAllowed = true;
     }
 
     public void DeInit()
@@ -33,13 +37,17 @@ public class FurnitureController
     private void OnSelectFurniture(Furniture furniture)
     {
         _selectedFurniture = furniture;
-        _furnitureUI.ShowUI();
+
+        if(_isEditAllowed)
+            _furnitureUI.ShowUI();
     }
 
     private void OnUnSelectFurniture(Furniture furniture)
     {
         _selectedFurniture = null;
-        _furnitureUI.HideUI();
+
+        if (_isEditAllowed)
+            _furnitureUI.HideUI();
     }
 
     private void EditFurniture()
@@ -54,5 +62,16 @@ public class FurnitureController
     {
         FurnitureSeller seller = new(_selectedFurniture);
         seller.Sale();
+    }
+
+    public void OnDayStarted()
+    {
+        _isEditAllowed = false;
+        _furnitureUI.HideUI();
+    }
+
+    public void OnDayEnded()
+    {
+        _isEditAllowed = true;
     }
 }

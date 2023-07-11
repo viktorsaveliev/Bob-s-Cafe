@@ -25,12 +25,12 @@ public class Furniture : InteractableObject
         }
     }
 
-    protected override void OnSelect()
+    protected override void OnSelected()
     {
         EventBus.OnPlayerSelectFurniture?.Invoke(this);
     }
 
-    protected override void OnUnSelect()
+    protected override void OnUnSelected()
     {
         EventBus.OnPlayerUnSelectFurniture?.Invoke(this);
     }

@@ -51,7 +51,7 @@ public class HandleSelector : MonoBehaviour
 
             if (visitorsInGroup.Length > _selectedTable.GetFreeChairsCount())
             {
-                print("Dont have free chairs");
+                Notification.ShowSimple(Notification.MessageType.NoEmptySeats);
                 return;
             }
 
@@ -68,7 +68,7 @@ public class HandleSelector : MonoBehaviour
         {
             if (_selectedTable.GetFreeChairsCount() == 0)
             {
-                print("Dont have free chairs");
+                Notification.ShowSimple(Notification.MessageType.NoEmptySeats);
                 return;
             }
 
@@ -82,6 +82,14 @@ public class HandleSelector : MonoBehaviour
 
     private void SelectVisitor(Visitor visitor)
     {
+        if(visitor.IsMemberGroup)
+        {
+            foreach(Visitor visitorInGroup in _groups.Visitors[visitor.MemberGroupID])
+            {
+                visitorInGroup.Select();
+            }
+        }
+
         _selectedVisitor = visitor;
 
         if(visitor.CurrentState is EatingState == false) _acceptButton.SetActive(_selectedTable != null);
@@ -104,12 +112,10 @@ public class HandleSelector : MonoBehaviour
             if (_selectedTable != table)
             {
                 if (_selectedTable != null)
-                {
                     UnSelectTable();
-                }
 
                 _selectedTable = table;
-                _acceptButton.SetActive(true);
+                _acceptButton.SetActive(_selectedVisitor != null);
             }
         }
     }

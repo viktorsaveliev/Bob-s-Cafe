@@ -16,6 +16,8 @@ public abstract class InteractableObject : MonoBehaviour, IInteractable
     {
         _outline = GetComponent<Outline>();
         _outline.OutlineWidth = 0;
+
+        ChangeOutlineColor(VisualDataConfig.OutlineType.MouseStay);
     }
 
     private void OnMouseEnter()
@@ -68,31 +70,30 @@ public abstract class InteractableObject : MonoBehaviour, IInteractable
         ShowOutline();
         ChangeOutlineColor(VisualDataConfig.OutlineType.Selected);
 
-        OnSelect();
+        OnSelected();
     }
 
     public void UnSelect()
     {
-        if (IsSelected == false) return;
+        if (!IsSelected) return;
 
         IsSelected = false;
 
         ChangeOutlineColor(VisualDataConfig.OutlineType.MouseStay);
 
-        if (IsOnMouseEnter == false)
+        if (!IsOnMouseEnter)
         {
             HideOutline();
         }
 
-        OnUnSelect();
+        OnUnSelected();
     }
 
-    protected abstract void OnSelect();
-    protected abstract void OnUnSelect();
+    protected abstract void OnSelected();
+    protected abstract void OnUnSelected();
 
     public void ShowOutline()
     {
-        if (IsSelected) return;
         _outline.OutlineWidth = 5;
     }
 
@@ -104,7 +105,7 @@ public abstract class InteractableObject : MonoBehaviour, IInteractable
 
     protected void ChangeOutlineColor(VisualDataConfig.OutlineType type)
     {
-        if (_outline == null) return;
+        if (_outline == null || _visualDataConfig == null) return;
         _outline.OutlineColor = _visualDataConfig.OutlineColors[(int)type];
     }
 

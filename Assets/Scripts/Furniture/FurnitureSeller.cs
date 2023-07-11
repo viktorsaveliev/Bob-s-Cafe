@@ -11,7 +11,7 @@ public class FurnitureSeller
 
     public void Sale()
     {
-        Notification.Show("Sale furniture", $"Do you want sale this furniture for {_furniture.GetPrice / 2}?", ConfirmSale);
+        Notification.ShowDialog(Notification.MessageType.SaleFurniture, ConfirmSale);
     }
 
     public void ConfirmSale()

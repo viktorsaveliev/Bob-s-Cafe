@@ -19,4 +19,6 @@ public class StringBus
         "Stewart", "Flores", "Morris", "Nguyen", "Murphy", "Rivera", "Cook", "Rogers", "Morgan", "Peterson",
         "Cooper"
     };
+
+    public readonly string Language = nameof(Language);
 }

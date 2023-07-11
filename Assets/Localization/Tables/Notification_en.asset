@@ -23,7 +23,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 152752410624
-    m_Localized: Do you want to sell this furniture for 20$?
+    m_Localized: Do you want to sell this furniture?
     m_Metadata:
       m_Items: []
   - m_Id: 422026727424
@@ -32,6 +32,38 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 471762784256
     m_Localized: Cancel
+    m_Metadata:
+      m_Items: []
+  - m_Id: 779424593137664
+    m_Localized: Money
+    m_Metadata:
+      m_Items: []
+  - m_Id: 779464007012352
+    m_Localized: You don't have enough money
+    m_Metadata:
+      m_Items: []
+  - m_Id: 780169430224896
+    m_Localized: There are not enough seats available at this table
+    m_Metadata:
+      m_Items: []
+  - m_Id: 780057782046720
+    m_Localized: Table is occupied
+    m_Metadata:
+      m_Items: []
+  - m_Id: 782668916641792
+    m_Localized: Warning
+    m_Metadata:
+      m_Items: []
+  - m_Id: 782678542569472
+    m_Localized: 'Error: invalid value'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 783412453494784
+    m_Localized: This visitor wants to sit separately
+    m_Metadata:
+      m_Items: []
+  - m_Id: 783373178032128
+    m_Localized: Visitor
     m_Metadata:
       m_Items: []
   references:

@@ -16,10 +16,11 @@ MonoBehaviour:
     m_Code: en
   m_SharedData: {fileID: 11400000, guid: eb898b866059f994cb967e09ebdf1337, type: 2}
   m_Metadata:
-    m_Items: []
+    m_Items:
+    - rid: 2313548648050851844
   m_TableData:
   - m_Id: 27208503296
-    m_Localized: Open cafe
+    m_Localized: Open a cafe
     m_Metadata:
       m_Items: []
   - m_Id: 400468004864
@@ -30,6 +31,27 @@ MonoBehaviour:
     m_Localized: Cancel
     m_Metadata:
       m_Items: []
+  - m_Id: 49275589414912
+    m_Localized: Day {timeControl.GetCurrentDay}
+    m_Metadata:
+      m_Items:
+      - rid: 2313548648050851844
+  - m_Id: 71272436387840
+    m_Localized: Edit
+    m_Metadata:
+      m_Items: []
+  - m_Id: 71319106408448
+    m_Localized: Sale
+    m_Metadata:
+      m_Items: []
+  - m_Id: 320581526409216
+    m_Localized: Accept
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
-    RefIds: []
+    RefIds:
+    - rid: 2313548648050851844
+      type: {class: SmartFormatTag, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_Entries: 00d000ded02c0000

@@ -1,12 +1,13 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
-public class TimeControl : MonoBehaviour
+public class TimeController : MonoBehaviour, ITimeSubject
 {
     public int GetCurrentMinutes => _currentMinutes;
     public int GetCurrentHours => _currentHours;
-    public int GetCurrendDay => _currentDay;
+    public int GetCurrentDay => _currentDay;
     public int GetHoursForStartDay => _hoursForStartDay;
     public int GetHoursForEndDay => _hoursForEndDay;
 
@@ -24,6 +25,9 @@ public class TimeControl : MonoBehaviour
     private Action _onMinutePassed;
     private Action _onHourPassed;
 
+    private readonly List<IStartDayObserver> _startDayObservers = new();
+    private readonly List<IEndDayObserver> _endDayObservers = new();
+
     public void StartNewDay()
     {
         _dayStarted = true;
@@ -38,7 +42,16 @@ public class TimeControl : MonoBehaviour
         }
 
         _dayTimer = StartCoroutine(TimeFlow());
-        EventBus.OnNewDayStarted?.Invoke();
+
+        foreach(IStartDayObserver observer in _startDayObservers)
+        {
+            if(observer == null)
+            {
+                print("Error: Time Init #01");
+                continue;
+            }
+            observer.OnDayStarted();
+        }
     }
 
     public void EndCurrentDay()
@@ -51,7 +64,15 @@ public class TimeControl : MonoBehaviour
         }
         _dayTimer = null;
 
-        EventBus.OnCurrentDayEnded?.Invoke();
+        foreach (IEndDayObserver observer in _endDayObservers)
+        {
+            if (observer == null)
+            {
+                print("Error: Time Init #02");
+                continue;
+            }
+            observer.OnDayEnded();
+        }
     }
 
     private IEnumerator TimeFlow()
@@ -107,5 +128,31 @@ public class TimeControl : MonoBehaviour
     public void UnsubscribeToHourPassed(Action callback)
     {
         _onHourPassed -= callback;
+    }
+
+    public void AddStartDayObserver(IStartDayObserver observer)
+    {
+        if (_startDayObservers.Contains(observer)) return;
+
+        _startDayObservers.Add(observer);
+    }
+
+    public void RemoveStartDayObserver(IStartDayObserver observer)
+    {
+        if (_startDayObservers.Contains(observer))
+            _startDayObservers.Remove(observer);
+    }
+
+    public void AddEndDayObserver(IEndDayObserver observer)
+    {
+        if (_endDayObservers.Contains(observer)) return;
+
+        _endDayObservers.Add(observer);
+    }
+
+    public void RemoveEndDayObserver(IEndDayObserver observer)
+    {
+        if (_endDayObservers.Contains(observer))
+            _endDayObservers.Remove(observer);
     }
 }
